@@ -34,15 +34,19 @@ const Main:React.FC<{}> = () =>
 
     const [paginatedData,setPaginatedData] = useState<Array<any>>([]);
     const [isRefreshing,setIsRefreshing] = useState<boolean>(false);
-    const [responseData,setResponseData] = useState<Array<any>>([]);
+    const [responseData,setResponseData] = useState<any>([]);
     const [fileDownloadIsLoading,setFileDownloadIsLoading] = useState<boolean>(false);
 
 
     useEffect(()=>
     {
-    
-        setPaginatedData((paginatedData:any)=>[...paginatedData, ...responseData])
- 
+      console.log(responseData);
+      if(responseData.hasOwnProperty('entries') && responseData.hasOwnProperty('cursor'))
+      {
+        setPaginatedData((paginatedData:any)=>[...paginatedData, ...responseData?.entries]);
+        setLoadMoreApiDataProps({...loadMoreApiDataProps, cursor:responseData?.cursor }) 
+      }  
+        
    
     },[responseData])
 
@@ -53,6 +57,7 @@ const Main:React.FC<{}> = () =>
          method: 'POST',
          body: initApiDataProps,
          addedUrl: '2/files/list_folder',
+         setResponseData:setResponseData
      }   
      return await postRequest(data);
     }
@@ -63,6 +68,7 @@ const Main:React.FC<{}> = () =>
         method: 'POST',
         body: loadMoreApiDataProps,
         addedUrl: '2/files/list_folder/continue',
+        setResponseData:setResponseData
     }   
        return await postRequest(data);
      }
@@ -72,41 +78,43 @@ const Main:React.FC<{}> = () =>
     const  loadMoreGetFilesCall:any  = useMutation(loadMoreGetFilesInFolder,{retry:false});
 
    
-   useEffect(()=>{
-     if( initGetFilesCall.isSuccess)
-     {
-      if(initGetFilesCall.data?.status==200)
-      {
-        setResponseData(initGetFilesCall.data.data.entries);
-        setLoadMoreApiDataProps({...loadMoreApiDataProps, cursor:initGetFilesCall.data.data.cursor }) 
-      }
+//    useEffect(()=>{
+//      if( initGetFilesCall.isSuccess)
+//      {
+//       if(initGetFilesCall.data?.status==200)
+//       {
+       
+//       }
 
-     }
+//      }
     
 
-   },[initGetFilesCall.isSuccess])
+//    },[initGetFilesCall.isSuccess])
 
 
-  useEffect(()=>{
- if(loadMoreGetFilesCall.isSuccess)
- {
-  if(loadMoreGetFilesCall.data?.status==200)
-  {
-    setResponseData(loadMoreGetFilesCall.data.data.entries);
-    setLoadMoreApiDataProps({...loadMoreApiDataProps, cursor:loadMoreGetFilesCall.data.data.cursor }) 
-  }   
- }
+//   useEffect(()=>{
+//  if(loadMoreGetFilesCall.isSuccess)
+//  {
+//   if(loadMoreGetFilesCall.data?.status==200)
+//   {
+//     setResponseData(loadMoreGetFilesCall.data.data.entries);
+//     setLoadMoreApiDataProps({...loadMoreApiDataProps, cursor:loadMoreGetFilesCall.data.data.cursor }) 
+//   }   
+//  }
     
 
-  },[loadMoreGetFilesCall.isSuccess])
+//   },[loadMoreGetFilesCall.isSuccess])
 
 
 
 
  const loadMoreContent = async() =>
  {
-   if(responseData.length >= ITEMS_PER_PAGE)
+   console.log('here oooooooo')
+   console.log(responseData?.entries?.length);
+   if(responseData?.entries?.length >= ITEMS_PER_PAGE)
    {
+     console.log('man them be mad')
     loadMoreGetFilesCall.mutate();
    }
  }
@@ -127,15 +135,7 @@ const Main:React.FC<{}> = () =>
  }
 
 
- const renderCustomFooter = ():JSX.Element|null =>
- {
- return loadMoreGetFilesCall.isLoading ? 
-  <View>
-    <ActivityIndicator/>
-    <Text>Loading More...</Text>
-  </View>
-  : null;
- }
+
 
 
 
@@ -166,6 +166,7 @@ const Main:React.FC<{}> = () =>
         
          <FlatList
                onRefresh={()=> refreshData()}
+               testID={'flatListContent'}
                refreshing={isRefreshing}
                  keyExtractor={(item, index) => index.toString()}
                   data={paginatedData}
@@ -174,16 +175,16 @@ const Main:React.FC<{}> = () =>
                  numColumns={2}
                  renderItem={({item,index})=>
                  <ImageList
+                 key={index}
                 item={item}
                  downloadSingleFile={downloadSingleFile}
                   />
                  }
                  onEndReached={async()=>  await loadMoreContent()}
                  onEndReachedThreshold={0.5}
-                ListFooterComponent={()=>renderCustomFooter()}
                />
 
-               <ModalActivityIndicator visible={fileDownloadIsLoading}  textString={'please wait while file is downloading...'}  />
+               <ModalActivityIndicator visible={fileDownloadIsLoading} testID="modalIndicator" textString={'please wait while file is downloading...'}  />
     </View>
        }
        </View>

@@ -18,6 +18,14 @@ activityIndicatorLoaderParent:{
 },
 flatListParent:{
     flex:1, justifyContent:'space-between',alignItems:'center'
+},
+textContent:{
+    flexWrap:'wrap',
+         color:'black',fontWeight:'bold',marginBottom:10
+},
+styleParentViewContent:{
+    justifyContent:'center',
+     alignItems:'center',padding:10,width:'50%'
 }
 
 })

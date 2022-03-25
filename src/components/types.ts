@@ -13,5 +13,6 @@ export type ModalActivityIndicatorTypes = {
     visible:boolean,
     size?:number | "large" | "small" | undefined,
     color?:string | undefined,
-    textString?:string
+    textString?:string,
+    testID?:string
 }

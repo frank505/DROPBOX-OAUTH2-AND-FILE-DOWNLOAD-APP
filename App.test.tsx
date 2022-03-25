@@ -4,6 +4,7 @@ import { RenderAPI, waitFor } from '@testing-library/react-native';
 import TestWrapperComponent from './jest/TestWrapper';
 import App from './App';
 import { Alert, Linking } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -42,6 +43,7 @@ describe('App test',()=>{
       renderComponent();
     await waitFor(()=> expect(Linking.openURL).toHaveBeenCalled()) ;
     await waitFor(()=>expect(Linking.addEventListener).toHaveBeenCalled());
+    await waitFor(()=>expect(AsyncStorage.setItem).toHaveBeenCalled());
      })
 
     

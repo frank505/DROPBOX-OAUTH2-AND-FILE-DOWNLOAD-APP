@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
-
+ 
 export const postRequest  = async(data:PostRequestType):Promise<AxiosResponse<any> | Error> =>
 {
       let tokenApp =  await AsyncStorage.getItem(ACCESS_TOKEN_KEY);
@@ -18,17 +18,12 @@ export const postRequest  = async(data:PostRequestType):Promise<AxiosResponse<an
         data.body,
         {
          headers: 
-         !data.contentType?
          {
             "Authorization":`Bearer ${tokenApp==null? PRESET_FALSE_AUTH_TOKEN: tokenApp}`
          }
-         :
-         { 
-               "Content-Type": data.contentType,
-               "Authorization":`Bearer ${tokenApp==null?PRESET_FALSE_AUTH_TOKEN:tokenApp}`
-            },
         }).then((res:AxiosResponse)=>
         {
+           data.setResponseData(res.data);
               return res;
         }).catch(async(err:any)=>
         {

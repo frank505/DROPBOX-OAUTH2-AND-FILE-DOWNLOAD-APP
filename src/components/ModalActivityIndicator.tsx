@@ -19,7 +19,9 @@ const ModalActivityIndicator:React.FC<ModalActivityIndicatorTypes> = (props) =>
         top:0,
         width:props.visible ? '100%' : 0,
         height:props.visible ? '100%' : 0,
-    }}>
+    }}
+    testID={props.testID}
+    >
     {
         !props.visible ? null :
         <View style={{

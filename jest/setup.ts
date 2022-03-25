@@ -14,16 +14,52 @@ export function isDisabled(element:any) {
   }
 
 
+  let mockDownloadFileDataOnFailed:any = {
+    respInfo:{
+        status:401
+    }
+  }
+
+  const fetch = () =>
+  {
+    return mockDownloadFileDataOnFailed;
+  }
+
   jest.mock('rn-fetch-blob', () => {
     return {
-      fs: {
-        dirs: {
-          DocumentDir: ''
+      __esModule: true,
+      default:{
+        fs: {
+          dirs: {
+            DocumentDir: '',
+            DonwloadDir:''
+          },
+          writeFile: () => Promise.resolve(),
         },
-        writeFile: () => Promise.resolve()
+        config:(data:any)=> {
+          return {
+            fetch: jest.fn().mockResolvedValueOnce( Promise.resolve())
+          }
       }
+    
+      }
+    
     }
   });
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+  
   
   jest.mock('@react-native-async-storage/async-storage', ()=>{
     return {
@@ -68,18 +104,13 @@ export function isDisabled(element:any) {
 
  
  jest.mock("react-native/Libraries/Linking/Linking", () => {
-  // const listeners:any = [];
   let dataCont:any = 'aaa#sss=aaa&saa';
   return {
     openURL: jest.fn(() => Promise.resolve("mockResolve")),
     addEventListener: jest.fn((event, handler) => {
-     handler({url:'ssss'});
-     
-  //  data = {url:'sssssss'};
-  //  return data;
+     handler({url:dataCont});
     }),
-  
-  
   }
+ });
 
- })
+ 
