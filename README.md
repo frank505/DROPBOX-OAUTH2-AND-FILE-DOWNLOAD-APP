@@ -9,6 +9,8 @@
    the command "npx react-native run-ios" in the terminal to open the app.
    To specify a device using the npx command you can add the --device flag to the command like this 
     "npx react-native ios --device="yourDeviceName"
+  
+  
   To run this app on android :
   1)Ensure you have android studio and all its dependencies perfectly setup.
   2) run command "npm install" in the terminal in the same directory as the project
