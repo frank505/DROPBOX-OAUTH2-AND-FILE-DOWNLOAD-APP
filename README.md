@@ -19,5 +19,5 @@
    To specify a device using the npx command you can add the --device flag to the command like this 
     "npx react-native android --deviceId="yourDeviceId"
   4) to run this on a real device and not an emulator use adb to check if that device is connected "adb devices"
-      then  run "adb reverse tcp:8081 tcp:8081" for port mapping between the device and your computer
-      then run "npx react-native android --deviceId="yourDeviceId" 
+    then  run "adb reverse tcp:8081 tcp:8081" for port mapping between the device and your computer
+    then run "npx react-native android --deviceId="yourDeviceId" 
