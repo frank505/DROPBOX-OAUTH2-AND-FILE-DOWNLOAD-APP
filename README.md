@@ -1,4 +1,6 @@
 **HOW TO RUN THIS APP FOR ANDROID AND IOS**
+
+
  To run this app on IOS :
  1) Ensure you have xcode and the required dependencies for a bare react native app setup 
  2) run command "npm install" in the terminal in the same directory as the project
