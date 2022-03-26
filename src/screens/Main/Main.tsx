@@ -78,32 +78,7 @@ const Main:React.FC<{}> = () =>
     const  loadMoreGetFilesCall:any  = useMutation(loadMoreGetFilesInFolder,{retry:false});
 
    
-//    useEffect(()=>{
-//      if( initGetFilesCall.isSuccess)
-//      {
-//       if(initGetFilesCall.data?.status==200)
-//       {
-       
-//       }
 
-//      }
-    
-
-//    },[initGetFilesCall.isSuccess])
-
-
-//   useEffect(()=>{
-//  if(loadMoreGetFilesCall.isSuccess)
-//  {
-//   if(loadMoreGetFilesCall.data?.status==200)
-//   {
-//     setResponseData(loadMoreGetFilesCall.data.data.entries);
-//     setLoadMoreApiDataProps({...loadMoreApiDataProps, cursor:loadMoreGetFilesCall.data.data.cursor }) 
-//   }   
-//  }
-    
-
-//   },[loadMoreGetFilesCall.isSuccess])
 
 
 

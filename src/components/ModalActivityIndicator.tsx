@@ -4,6 +4,7 @@ import {
     View,
     Text
   } from 'react-native'
+import { colors } from '../theme/colors';
 import { ModalActivityIndicatorTypes } from './types';
 
 
@@ -31,8 +32,8 @@ const ModalActivityIndicator:React.FC<ModalActivityIndicatorTypes> = (props) =>
             }}>
             <ActivityIndicator
                 size={props.size ? props.size : 'large'} 
-                color={props.color ? props.color : 'white'} />
-                <Text style={{color:'white',fontWeight:'bold',fontSize:18}}>{props.textString}</Text>
+                color={props.color ? props.color : colors.white} />
+                <Text style={{color:colors.white,fontWeight:'bold',fontSize:18}}>{props.textString}</Text>
         </View>
     }        
     </View>

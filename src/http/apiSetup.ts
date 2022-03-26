@@ -29,7 +29,7 @@ export const postRequest  = async(data:PostRequestType):Promise<AxiosResponse<an
         {
            if( err?.response.status == 401) 
            {
-            generateNewTokenOnPostRequest(data);
+            return generateNewTokenOnPostRequest(data);
            }
 
             Alert.alert('Error','Data failed to fetch please try again later');
@@ -52,7 +52,7 @@ export const postRequest  = async(data:PostRequestType):Promise<AxiosResponse<an
       {
          text: 'Generate New Token',
          onPress: async() => {
-            await generateNewOauth();
+            await generateNewOauth(data,'API_CALL');
          }
        }
    ],{cancelable: false} );
@@ -61,10 +61,8 @@ export const postRequest  = async(data:PostRequestType):Promise<AxiosResponse<an
 
 
 
- export const generateNewOauth = async():Promise<any>  => 
+ export const generateNewOauth = async(data:PostRequestType, requestType:string):Promise<any>  => 
 {
-
-   let accessT:string = '';
     Linking.
     openURL(OAUTH_URL);
     Linking.addEventListener('url', async(response)=>
@@ -72,9 +70,9 @@ export const postRequest  = async(data:PostRequestType):Promise<AxiosResponse<an
        let newString = response.url;
        let accessToken = newString.split("#")[1].split("&")[0].split("=")[1];    
      await AsyncStorage.setItem(ACCESS_TOKEN_KEY, `${accessToken}`); 
-     accessT = accessToken;
+     requestType == 'DOWNLOAD_FILE' ? await downloadFilePostRequest(data) : await postRequest(data);
     });
-  return accessT;
+
 }
 
 
@@ -88,8 +86,8 @@ export const downloadFilePostRequest = async(data:PostRequestType):Promise<void>
    let downloadData:string = JSON.stringify({path:data.body.pathDisplay});
     data.setIsLoading(true);
     RNFetchBlob.config({  
-     fileCache:true,
-      path:dirs.DownloadDir+''+data.body.pathDisplay
+     fileCache:true, 
+      path:dirs.DocumentDir+''+data.body.pathDisplay
     }).
     fetch(data.method, DOWNLOAD_FILE_URL+''+data.addedUrl,
     {
@@ -128,7 +126,7 @@ const generateNewTokenForFileDownload = (data:PostRequestType) =>
       {
          text: 'Generate New Token',
          onPress: async() => {
-            await generateNewOauth();
+            await generateNewOauth(data, 'DOWNLOAD_FILE');
          }
        }
    ],{cancelable: false} );

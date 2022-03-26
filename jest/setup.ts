@@ -20,10 +20,7 @@ export function isDisabled(element:any) {
     }
   }
 
-  const fetch = () =>
-  {
-    return mockDownloadFileDataOnFailed;
-  }
+
 
   jest.mock('rn-fetch-blob', () => {
     return {

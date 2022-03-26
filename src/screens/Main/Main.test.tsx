@@ -6,8 +6,8 @@ import { Alert, Linking } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TestWrapperComponent from '../../../jest/TestWrapper';
 import axios from 'axios';
-import * as queryM from 'react-query';
 import RNFetchBlob from 'rn-fetch-blob';
+import * as apiSetup  from '../../http/apiSetup';
 
 
 
@@ -45,6 +45,9 @@ let mockDownloadFileDataOnFailed:any = {
   }
 }
 
+let mockDownloadOnSuccess:any = {
+  path:jest.fn().mockResolvedValue('saaaa')
+}
 
 
 const renderComponent = ():RenderAPI =>
@@ -63,7 +66,7 @@ describe('App test',()=>{
     jest.clearAllMocks();
 });
 
-it('token is null make api request', async()=>{
+it('token is null make api request and we get a 401', async()=>{
     axios.post = jest.fn().mockRejectedValueOnce({response:{status:401}});
     jest.spyOn(Alert,'alert');
     let resolveNull:any = Promise.resolve(null);
@@ -80,7 +83,16 @@ it('token is null make api request', async()=>{
     alertMock.mock.calls[0][2][1].onPress(); 
     await waitFor(()=>expect(Linking.openURL).toHaveBeenCalled());
     await waitFor(()=>expect(Linking.addEventListener).toHaveBeenCalled());
+});
 
+it('fails api request and returns anything else not a 401', async()=>{
+  axios.post = jest.fn().mockRejectedValueOnce({response:{status:400}});
+  jest.spyOn(Alert,'alert');
+  let resolveNull:any = Promise.resolve(null);
+  AsyncStorage.getItem = jest.fn().mockResolvedValue(resolveNull);
+  renderComponent();
+  await waitFor(()=>expect(AsyncStorage.getItem).toHaveBeenCalled());
+  await waitFor(()=>expect(Alert.alert).toHaveBeenCalled());
 
 })
 
@@ -123,11 +135,12 @@ it('token is null make api request', async()=>{
        await waitFor(()=>expect(axios.post).toHaveBeenCalled() );  
        //show modal indicator first on button click
        let elemCLick:any = await findByTestId('buttonContent'+mockIdToUse);
-            fireEvent.press(elemCLick) ;
+       fireEvent.press(elemCLick);
        await waitFor(()=>expect(AsyncStorage.getItem).toHaveBeenCalled());
        await waitFor(()=> expect(queryByTestId('modalIndicator')).not.toBeNull() ); 
+      //  await waitFor(()=>expect(RNFetchBlob.config).toHaveBeenCalled() );
  
-    }) 
+    })   
 
      it('download file process fails', async()=>{
          //fetch data first
@@ -137,15 +150,29 @@ it('token is null make api request', async()=>{
        const {getByTestId,queryByTestId} =  renderComponent();
        await waitFor(()=>expect(axios.post).toHaveBeenCalled() );  
        //show modal indicator first on button click
-       RNFetchBlob.config({ fileCache:true,path:''}).fetch = jest.fn().mockResolvedValueOnce(Promise.resolve( mockDownloadFileDataOnFailed ));
+       RNFetchBlob.config({ fileCache:true,path:''}).fetch = 
+       jest.fn().mockResolvedValueOnce(Promise.resolve( mockDownloadFileDataOnFailed ));
        fireEvent.press(getByTestId('buttonContent'+mockIdToUse));
        await waitFor(()=> expect(queryByTestId('modalIndicator')).not.toBeNull() );
 
      })
 
+
+     it('download file successful',  async()=>{
+      jest.spyOn(Alert,'alert');
+      axios.post = jest.fn().mockResolvedValueOnce(Promise.resolve( mockApiData ));
+      AsyncStorage.setItem = jest.fn().mockResolvedValue(Promise.resolve('sss'));
+    const {getByTestId,queryByTestId} =  renderComponent();
+    await waitFor(()=>expect(axios.post).toHaveBeenCalled() );  
+    //show modal indicator first on button click
+    RNFetchBlob.config({ fileCache:true,path:''}).fetch = jest.fn().mockResolvedValue(Promise.resolve( mockDownloadOnSuccess ));
+    await waitFor(()=> fireEvent.press(getByTestId('buttonContent'+mockIdToUse))) ;
+    await waitFor(()=> expect(queryByTestId('modalIndicator')).not.toBeNull() );
+     })
+
    
 
-
+ 
     
 })
 

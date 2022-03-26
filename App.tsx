@@ -24,7 +24,7 @@
  import { QueryClient, QueryClientProvider } from 'react-query';
  import Main from './src/screens/Main';
  import NetInfo, {  useNetInfo }  from "@react-native-community/netinfo";
-import { ACCESS_TOKEN_KEY, CLIENT_ID, OAUTH_URL } from './src/constants';
+import { ACCESS_TOKEN_KEY, CLIENT_ID, OAUTH_URL, PRESET_FALSE_AUTH_TOKEN } from './src/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
  
 
